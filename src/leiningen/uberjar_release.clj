@@ -1,4 +1,4 @@
-(ns leiningen.release
+(ns leiningen.uberjar-release
   (:require
    [clojure.java.shell :as sh]
    [clojure.string     :as string])
@@ -8,9 +8,7 @@
 (defn raise [fmt & args]
   (throw (RuntimeException. (apply format fmt args))))
 
-(def default-clojars-url "clojars@clojars.org:")
-
-(def ^:dynamic config {:clojars-url default-clojars-url})
+(def ^:dynamic config {})
 
 (def scm-systems
      {:git {:add    ["git" "add"]
@@ -135,38 +133,9 @@
 (defn set-project-version! [old-vstring new-vstring]
   (spit "project.clj" (replace-project-version old-vstring new-vstring)))
 
-(defn detect-deployment-strategy [project]
-  (cond
-    (:deploy-via config)
-    (:deploy-via config)
-
-    (:repositories project)
-    :lein-deploy
-
-    :no-deploy-strategy
-    :lein-install))
-
-
-(defn clojars-url []
-  (or (:clojars-url config)
-      default-clojars-url))
-
 (defn perform-deploy! [project project-jar]
-  (case (detect-deployment-strategy project)
-
-    :lein-deploy
-    (sh! "lein" "deploy")
-
-    :lein-install
-    (sh! "lein" "install")
-
-    :clojars
-    (sh! "scp" "pom.xml" project-jar (clojars-url))
-
-    :shell
-    (apply sh! (:shell config))
-
-    (raise "Error: unrecognized deploy strategy: %s" (detect-deployment-strategy))))
+  (println config)
+  (apply sh! (:shell config)))
 
 (defn extract-project-version-from-file
   ([]
@@ -192,8 +161,10 @@
 
 )
 
-(defn release [project & args]
-  (binding [config (or (:lein-release project) config)]
+(defn uberjar-release
+  "Release uberjar with a shell command"
+  [project & args]
+  (binding [config (or (:uberjar-release project) config)]
     (let [current-version  (get project :version)
           release-version  (compute-release-version current-version)
           next-dev-version (compute-next-development-version (.replaceAll current-version "-SNAPSHOT" ""))
@@ -204,16 +175,14 @@
         (set-project-version! current-version release-version)
         (println "adding, committing and tagging project.clj")
         (scm! :add "project.clj")
-        (scm! :commit "-m" (format "lein-release plugin: preparing %s release" release-version))
+        (scm! :commit "-m" (format "lein-uberjar-release plugin: preparing %s release" release-version))
         (scm! :tag (format "%s-%s" (:name project) release-version)))
       (when-not (.exists (java.io.File. jar-file-name))
-        (println "creating jar and pom files...")
-        (sh! "lein" "jar")
-        (sh! "lein" "pom"))
+        (println "creating uberjar...")
+        (sh! "lein" "uberjar"))
       (perform-deploy! project jar-file-name)
       (when-not (is-snapshot? (extract-project-version-from-file))
         (println (format "updating version %s => %s for next dev cycle" release-version next-dev-version))
         (set-project-version! release-version next-dev-version)
         (scm! :add "project.clj")
-        (scm! :commit "-m" (format "lein-release plugin: bumped version from %s to %s for next development cycle" release-version next-dev-version))))))
-
+        (scm! :commit "-m" (format "lein-uberjar-release plugin: bumped version from %s to %s for next development cycle" release-version next-dev-version))))))

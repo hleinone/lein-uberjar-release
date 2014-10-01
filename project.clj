@@ -1,6 +1,7 @@
-(defproject lein-release/lein-release "1.0.6-SNAPSHOT"
-  :description "Leiningen Release Plugin"
+(defproject uberjar-release "1.0.0-SNAPSHOT"
+  :description "Leiningen Uberjar Release Plugin"
   :dev-dependencies [[swank-clojure "1.4.2"]]
-  :eval-in :leiningen
+  :dependencies [[org.clojure/clojure "1.3.0"]]
   :lein-release {:deploy-via :clojars}
-  :dependencies [[org.clojure/clojure "1.3.0"]])
+  :eval-in-leiningen true
+  :min-lein-version "2.0.0")
