@@ -48,15 +48,15 @@ If set, this will be a suffix appended to the version of the released jar.  We h
 
 In the fork case, we would often add a @-rn@ suffix:
 
-pre. RELEASE_QUALIFIER=-rn lein release
+pre. RELEASE_QUALIFIER=-rn lein uberjar-release
 
 In the latter case (release candidates or incremental patch):
 
-pre. RELEASE_QUALIFIER=-rc1 lein release
+pre. RELEASE_QUALIFIER=-rc1 lein uberjar-release
 
 or:
 
-pre. RELEASE_QUALIFIER=.1 lein release
+pre. RELEASE_QUALIFIER=.1 lein uberjar-release
 
 h1. Supported SCM Systems
 
