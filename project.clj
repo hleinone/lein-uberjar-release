@@ -1,4 +1,4 @@
-(defproject uberjar-release "0.0.1"
+(defproject uberjar-release "0.0.2-SNAPSHOT"
   :description "Leiningen Uberjar Release Plugin"
   :dev-dependencies [[swank-clojure "1.4.2"]]
   :dependencies [[org.clojure/clojure "1.3.0"]]
