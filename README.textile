@@ -18,10 +18,10 @@ h1. Usage
 
 See "Leiningen: Installing Plugins":https://github.com/technomancy/leiningen/wiki/Upgrading#plugins
 
-Add @[lein-uberjar-release "1.0.0"]@ to the @:user -> :plugins@ section of your @$HOME/.lein/profiles.clj@:
+Add @[lein-uberjar-release "0.0.1"]@ to the @:user -> :plugins@ section of your @$HOME/.lein/profiles.clj@:
 
 <pre>
-{:user {:plugins [[lein-uberjar-release "1.0.0"]]}}
+{:user {:plugins [[lein-uberjar-release "0.0.1"]]}}
 </pre>
 
 To perform a release:
